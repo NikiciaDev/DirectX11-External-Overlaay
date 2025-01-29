@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <dwmapi.h>
 #include <d3d11.h>
+#include <string>
 
 #include "../external/imgui/imgui.h"
 #include "../external/imgui/imgui_impl_dx11.h"
@@ -18,9 +19,10 @@ private:
     static ID3D11DeviceContext* deviceContext;
     static IDXGISwapChain* swapChain;
     static ID3D11RenderTargetView* renderTargetView;
+    static std::wstring windowName;
 
 public:
-    static void init(HINSTANCE& instanceIn, INT& cmdShowIn);
+    static void init(HINSTANCE& instanceIn, INT& cmdShowIn, std::string name);
     static void release();
 
     static void run();
