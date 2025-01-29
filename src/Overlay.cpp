@@ -9,11 +9,15 @@ ID3D11DeviceContext* Overlay::deviceContext = nullptr;
 IDXGISwapChain* Overlay::swapChain = nullptr;
 ID3D11RenderTargetView* Overlay::renderTargetView = nullptr;
 std::wstring Overlay::windowName = L"";
+Vfunc Overlay::renderFunction = nullptr;
+int Overlay::width = -1;
+int Overlay::height = -1;
 
-void Overlay::init(HINSTANCE& instanceIn, INT& cmdShowIn, std::string windowNameIn) {
+void Overlay::init(HINSTANCE& instanceIn, INT& cmdShowIn, std::string windowNameIn, Vfunc renderFunctionIn) {
     instance = instanceIn;
     cmdShow = cmdShowIn;
     windowName = std::wstring(windowNameIn.begin(), windowNameIn.end());
+    renderFunction = renderFunctionIn;
 
     WNDCLASSEXW wc{};
     wc.cbSize = sizeof(WNDCLASSEXW);
@@ -27,7 +31,6 @@ void Overlay::init(HINSTANCE& instanceIn, INT& cmdShowIn, std::string windowName
         return;
     }
 
-    int width, height;
     getDesktopResolution(width, height);
 
     window = CreateWindowExW(
@@ -222,8 +225,7 @@ void Overlay::run() {
 
         ImGui::NewFrame();
 
-        // render
-        ImGui::GetBackgroundDrawList()->AddCircleFilled({500, 500}, 25.f, ImColor(1.f, 0.f, 0.f));
+        renderFunction();
 
         ImGui::Render();
 
