@@ -9,6 +9,7 @@
 #include "../external/imgui/imgui_impl_win32.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+typedef void (*Vfunc)();
 
 class Overlay {
 private:
@@ -20,9 +21,13 @@ private:
     static IDXGISwapChain* swapChain;
     static ID3D11RenderTargetView* renderTargetView;
     static std::wstring windowName;
+    static Vfunc renderFunction;
 
 public:
-    static void init(HINSTANCE& instanceIn, INT& cmdShowIn, std::string name);
+    static int width;
+    static int height;
+
+    static void init(HINSTANCE& instanceIn, INT& cmdShowIn, std::string name, Vfunc renderFunctionIn);
     static void release();
 
     static void run();
