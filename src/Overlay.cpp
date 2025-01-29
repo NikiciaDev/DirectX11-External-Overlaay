@@ -1,3 +1,4 @@
+#pragma once
 #include "overlay.h"
 
 HINSTANCE Overlay::instance = nullptr;
@@ -7,17 +8,19 @@ ID3D11Device* Overlay::device = nullptr;
 ID3D11DeviceContext* Overlay::deviceContext = nullptr;
 IDXGISwapChain* Overlay::swapChain = nullptr;
 ID3D11RenderTargetView* Overlay::renderTargetView = nullptr;
+std::wstring Overlay::windowName = L"";
 
-void Overlay::init(HINSTANCE& instanceIn, INT& cmdShowIn) {
+void Overlay::init(HINSTANCE& instanceIn, INT& cmdShowIn, std::string windowNameIn) {
     instance = instanceIn;
     cmdShow = cmdShowIn;
+    windowName = std::wstring(windowNameIn.begin(), windowNameIn.end());
 
     WNDCLASSEXW wc{};
     wc.cbSize = sizeof(WNDCLASSEXW);
     wc.style = CS_HREDRAW | CS_VREDRAW;
     wc.lpfnWndProc = Overlay::windowProcedure;
     wc.hInstance = instance;
-    wc.lpszClassName = L"External Overlay Class";
+    wc.lpszClassName = windowName.c_str();
 
     if(!RegisterClassExW(&wc)) {
         MessageBox(nullptr, L"Failed to register window class!", L"Error", MB_ICONERROR);
@@ -30,7 +33,7 @@ void Overlay::init(HINSTANCE& instanceIn, INT& cmdShowIn) {
     window = CreateWindowExW(
         WS_EX_TOPMOST | WS_EX_TRANSPARENT | WS_EX_LAYERED,
         wc.lpszClassName,
-        L"External Overlay",
+        windowName.c_str(),
         WS_POPUP,
         0,
         0,
@@ -193,7 +196,7 @@ void Overlay::release() {
 
     if(window) {
         DestroyWindow(window);
-        UnregisterClassW(L"External Overlay Class", instance);
+        UnregisterClassW(windowName.c_str(), instance);
     }
 }
 
